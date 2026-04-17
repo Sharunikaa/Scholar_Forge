@@ -105,6 +105,8 @@ class CreateQueryRequest(BaseModel):
     question: str
     language: str = "en"
     citation_style: str = "apa"
+    word_count: int = 1500                  # Target word count
+    num_headings: int = 5                   # Number of main sections
 
 
 class SessionResponse(BaseModel):
@@ -253,7 +255,9 @@ async def create_query(
             query_id=query_id,
             session_id=session_id,
             question=req.question,
-            citation_style=req.citation_style
+            citation_style=req.citation_style,
+            word_count=req.word_count,
+            num_headings=req.num_headings
         )
         
         query = query_repo.get_by_id(query_id)
@@ -587,7 +591,9 @@ async def run_research_pipeline(
     query_id: str,
     session_id: str,
     question: str,
-    citation_style: str
+    citation_style: str,
+    word_count: int = 1500,
+    num_headings: int = 5
 ):
     """Run research pipeline in background with progress tracking."""
     try:
@@ -682,6 +688,8 @@ async def run_research_pipeline(
             "raw_query": question,
             "language": "en",
             "citation_style": citation_style,
+            "word_count": word_count,
+            "num_headings": num_headings,
             "sub_questions": [],
             "raw_search_results": [],
             "chunks": [],

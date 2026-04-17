@@ -44,7 +44,7 @@ export function useResearch() {
     }, 3000)
   }, [stopPolling])
 
-  const submit = useCallback(async (query, language = 'en', citationStyle = 'apa') => {
+  const submit = useCallback(async (query, language = 'en', citationStyle = 'apa', wordCount = 1500, numHeadings = 5) => {
     if (!query?.trim()) {
       setError('Please enter a research query')
       return null
@@ -57,7 +57,7 @@ export function useResearch() {
     setError(null)
 
     try {
-      const { data } = await startResearch(query, language, citationStyle)
+      const { data } = await startResearch(query, language, citationStyle, wordCount, numHeadings)
       setSessionId(data.session_id)
       setQueryId(data.query_id)
 

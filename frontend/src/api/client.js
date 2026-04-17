@@ -18,12 +18,14 @@ export const getSession = (sessionId) => {
 
 // ===== QUERY ENDPOINTS =====
 
-export const createQuery = (sessionId, question, language = 'en', citationStyle = 'apa') => {
+export const createQuery = (sessionId, question, language = 'en', citationStyle = 'apa', wordCount = 1500, numHeadings = 5) => {
   return client.post('/queries', {
     session_id: sessionId,
     question,
     language,
-    citation_style: citationStyle
+    citation_style: citationStyle,
+    word_count: wordCount,
+    num_headings: numHeadings
   })
 }
 
@@ -37,11 +39,11 @@ export const getReport = (queryId) => {
 
 // ===== COMBINED: start research (create session + query) =====
 
-export const startResearch = async (query, language = 'en', citationStyle = 'apa') => {
+export const startResearch = async (query, language = 'en', citationStyle = 'apa', wordCount = 1500, numHeadings = 5) => {
   // Create session
   const { data: session } = await createSession('user', query.slice(0, 50))
   // Create query in that session
-  const { data: queryData } = await createQuery(session.id, query, language, citationStyle)
+  const { data: queryData } = await createQuery(session.id, query, language, citationStyle, wordCount, numHeadings)
   return { data: { session_id: session.id, query_id: queryData.id } }
 }
 

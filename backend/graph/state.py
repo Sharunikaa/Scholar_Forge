@@ -81,6 +81,8 @@ class AgentState(TypedDict):
     raw_query: str
     language: str                           # "en" | "ta" | "hi"
     citation_style: str                     # "apa" | "mla" | "ieee"
+    word_count: int                         # Target word count (default: 1500)
+    num_headings: int                       # Number of main sections (default: 5)
 
     # === Planner Output ===
     sub_questions: List[SubQuestion]

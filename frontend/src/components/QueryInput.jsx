@@ -14,6 +14,8 @@ export function QueryInput({ onSubmitted }) {
   const [query, setQuery] = useState('')
   const [language, setLanguage] = useState('en')
   const [citationStyle, setCitationStyle] = useState('apa')
+  const [wordCount, setWordCount] = useState(1500)
+  const [numHeadings, setNumHeadings] = useState(5)
   const [localError, setLocalError] = useState(null)
   
   const { submit, isLoading, error: hookError } = useResearch()
@@ -29,7 +31,7 @@ export function QueryInput({ onSubmitted }) {
     }
 
     setLocalError(null)
-    const sessionId = await submit(query, language, citationStyle)
+    const sessionId = await submit(query, language, citationStyle, wordCount, numHeadings)
     
     if (sessionId && onSubmitted) {
       onSubmitted(sessionId)
@@ -98,7 +100,34 @@ export function QueryInput({ onSubmitted }) {
               <option value="ieee">IEEE</option>
             </select>
           </div>
+          <div className="settings-group">
+            <label>Report Length (words)</label>
+            <input
+              type="number"
+              value={wordCount}
+              onChange={(e) => setWordCount(Math.max(500, Math.min(5000, parseInt(e.target.value) || 1500)))}
+              disabled={isLoading}
+              min="500"
+              max="5000"
+              step="100"
+              className="number-input"
+            />
+            <small>500 - 5000 words</small>
+          </div>
 
+          <div className="settings-group">
+            <label>Number of Sections</label>
+            <input
+              type="number"
+              value={numHeadings}
+              onChange={(e) => setNumHeadings(Math.max(3, Math.min(10, parseInt(e.target.value) || 5)))}
+              disabled={isLoading}
+              min="3"
+              max="10"
+              className="number-input"
+            />
+            <small>3 - 10 sections</small>
+          </div>
           <button 
             type="submit" 
             className={`submit-button ${isLoading ? 'loading' : ''}`}

@@ -3,6 +3,10 @@ import client from '../api/client'
 
 export default function Home({ onNavigate, onToast }) {
   const [query, setQuery] = useState('')
+  const [language, setLanguage] = useState('en')
+  const [citationStyle, setCitationStyle] = useState('apa')
+  const [wordCount, setWordCount] = useState(1500)
+  const [numHeadings, setNumHeadings] = useState(5)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -27,8 +31,10 @@ export default function Home({ onNavigate, onToast }) {
       const response = await client.post('/queries', {
         session_id: sessionResp.data.id,
         question: query.trim(),
-        language: 'en',
-        citation_style: 'apa'
+        language: language,
+        citation_style: citationStyle,
+        word_count: wordCount,
+        num_headings: numHeadings
       })
       
       if (response.data && response.data.id) {
@@ -137,6 +143,141 @@ export default function Home({ onNavigate, onToast }) {
           <p style={{ marginTop: '10px', fontSize: '13px', color: '#6b6360' }}>
             💡 Be specific for better results. Include context, domain, or timeframe if relevant.
           </p>
+        </div>
+
+        {/* Settings Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '20px',
+          marginBottom: '28px'
+        }}>
+          {/* Language */}
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              fontSize: '14px',
+              color: '#1A1814'
+            }}>
+              Language
+            </label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1.5px solid #ede8e3',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                backgroundColor: '#ffffff'
+              }}
+            >
+              <option value="en">English</option>
+              <option value="ta">Tamil</option>
+              <option value="hi">Hindi</option>
+            </select>
+          </div>
+
+          {/* Citation Style */}
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              fontSize: '14px',
+              color: '#1A1814'
+            }}>
+              Citation Style
+            </label>
+            <select
+              value={citationStyle}
+              onChange={(e) => setCitationStyle(e.target.value)}
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1.5px solid #ede8e3',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                backgroundColor: '#ffffff'
+              }}
+            >
+              <option value="apa">APA</option>
+              <option value="mla">MLA</option>
+              <option value="ieee">IEEE</option>
+            </select>
+          </div>
+
+          {/* Report Length */}
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              fontSize: '14px',
+              color: '#1A1814'
+            }}>
+              Report Length (words)
+            </label>
+            <input
+              type="number"
+              value={wordCount}
+              onChange={(e) => setWordCount(Math.max(500, Math.min(5000, parseInt(e.target.value) || 1500)))}
+              disabled={loading}
+              min="500"
+              max="5000"
+              step="100"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1.5px solid #ede8e3',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                boxSizing: 'border-box'
+              }}
+            />
+            <small style={{ fontSize: '12px', color: '#6b6360' }}>500 - 5000</small>
+          </div>
+
+          {/* Number of Sections */}
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              fontSize: '14px',
+              color: '#1A1814'
+            }}>
+              Number of Sections
+            </label>
+            <input
+              type="number"
+              value={numHeadings}
+              onChange={(e) => setNumHeadings(Math.max(3, Math.min(10, parseInt(e.target.value) || 5)))}
+              disabled={loading}
+              min="3"
+              max="10"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1.5px solid #ede8e3',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                boxSizing: 'border-box'
+              }}
+            />
+            <small style={{ fontSize: '12px', color: '#6b6360' }}>3 - 10</small>
+          </div>
         </div>
 
         {/* Submit Button */}
